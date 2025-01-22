@@ -1,0 +1,94 @@
+pip install quix
+curl -fsSL https://github.com/quixio/quix-cli/raw/main/install.sh | bash
+git init
+quix init
+quix pipeline up
+
+[Unit]
+Description=Crypto Prices to Kafka
+After=network.target
+
+[Service]
+ExecStart=/home/gmarr/kafka/.venv/bin/python3 /home/gmarr/kafka/cryp.py > output.txt 2>&1
+Restart=always
+User=gmarr
+WorkingDirectory=/home/gmarr/kafka
+StandardOutput=append:/var/log/my_script.log
+StandardError=append:/var/log/my_script.err
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+Option 1: Using nohup
+The nohup command allows you to run a process that persists even after you log out.
+
+Run the script using nohup:
+nohup python3 your_script.py > output.log 2>&1 &
+> output.log: Redirects standard output to a file (output.log).
+2>&1: Redirects error output to the same file.
+&: Runs the process in the background.
+Check running processes:
+ps aux | grep your_script.py
+Stop the script: Find the process ID (PID) using ps aux and kill it:
+kill <PID>
+Option 2: Using tmux or screen
+Both tmux and screen are terminal multiplexers that let you run processes in detachable sessions.
+
+Using tmux:
+
+Start a tmux session:
+tmux new -s my_script
+Run your Python script:
+python3 your_script.py
+Detach the session: Press Ctrl+B, then D.
+Reattach the session later:
+tmux attach -t my_script
+Using screen:
+
+Start a screen session:
+screen -S my_script
+Run your Python script:
+python3 your_script.py
+Detach the session: Press Ctrl+A, then D.
+Reattach the session later:
+screen -r my_script
+Option 3: Using systemd
+For a more robust solution, create a systemd service to manage your script.
+
+Create a service file:
+sudo nano /etc/systemd/system/my_script.service
+Add the following content:
+[Unit]
+Description=My Python Script
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /path/to/your_script.py
+Restart=always
+User=your_username
+WorkingDirectory=/path/to
+StandardOutput=append:/var/log/my_script.log
+StandardError=append:/var/log/my_script.err
+
+[Install]
+WantedBy=multi-user.target
+Reload systemd and start the service:
+sudo systemctl daemon-reload
+sudo systemctl start my_script.service
+sudo systemctl enable my_script.service
+Check the status:
+sudo systemctl status my_script.service
+Stop the service:
+sudo systemctl stop my_script.service
+Option 4: Run in the Background with &
+Run the script directly in the background.
+
+Start the script:
+python3 your_script.py &
+View background jobs:
+jobs
+Bring the script to the foreground:
+fg %1
+Stop the script: Press Ctrl+C or use kill with the PID.
