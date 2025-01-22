@@ -8,9 +8,13 @@ import os
 from quixstreams import Application
 import logging
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 # Alpaca API credentials
-ALPACA_API_KEY = "PKTLERXUHCZNXYCDCTXJ"
-ALPACA_API_SECRET = "npImKaBQsjQUf9ClkbdhztwCRGLqS489KphsVL0i"
+ALPACA_API_KEY = os.getenv('alpaca_key')
+ALPACA_API_SECRET = os.getenv('alpaca_secret')
 
 
 # WebSocket endpoint for Alpaca crypto data
